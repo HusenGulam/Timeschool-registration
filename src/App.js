@@ -1,10 +1,15 @@
-import React from 'react';
-import './App.css';
+import { useState } from 'react';
+import Login from './components/login/login';
+import Form from './components/form/form';
+import 'boxicons/css/boxicons.min.css';
+
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
-    <div className="App">
-        
+    <div>
+      {isLoggedIn ? <Form /> : <Login onSuccess={() => setIsLoggedIn(true)} />}
     </div>
   );
 }
