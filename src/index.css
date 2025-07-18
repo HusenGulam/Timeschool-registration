@@ -2,3 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+    .robotic {
+    width: 70%;
+    }
+  @media (max-width:930px) {
+    .robotic{
+      width: 45%;
+    }
+  }
+  @media(max-width:710px){
+    .main-form{
+      width: 80% !important;
+    }
+    .robotic{
+      margin-bottom: 350px;
+      margin-left: -10%;
+      width: 30%;
+    }
+    .bubble{
+      margin-top: 10%;
+      margin-left: 10%;
+    }
+  }
+  
