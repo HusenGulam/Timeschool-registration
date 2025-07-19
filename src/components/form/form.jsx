@@ -3,6 +3,7 @@ import './App.css'
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import robot from "../img/robott.png";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faListNumeric, faPhone, faLocation } from '@fortawesome/free-solid-svg-icons';
 
@@ -15,10 +16,10 @@ export default function RobotForm() {
     raqam: "",
     manzil: "",
   });
-  
 
   const [robotMsg, setRobotMsg] = useState("Hush kelibsan!");
   const [showMsg, setShowMsg] = useState(true);
+  const navigate = useNavigate(); // For navigation
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,6 +27,7 @@ export default function RobotForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     for (let key in formData) {
       if (!formData[key].trim()) {
         const formatted = key.charAt(0).toUpperCase() + key.slice(1);
@@ -51,7 +53,7 @@ export default function RobotForm() {
 `;
 
     try {
-      await fetch(`https://api.telegram.org/bot8104651750:AAG08hZyYNKCI8E6upO1uGkWsUw5qiIHVvs/sendMessage`, {
+      const response = await fetch(`https://api.telegram.org/bot8104651750:AAG08hZyYNKCI8E6upO1uGkWsUw5qiIHVvs/sendMessage`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,23 +64,32 @@ export default function RobotForm() {
         }),
       });
 
-      setRobotMsg("✅ Muvaffaqiyatli yuborildi!");
+      if (response.ok) {
+        setRobotMsg("✅ Muvaffaqiyatli yuborildi!");
+        setFormData({
+          ism: "",
+          familiya: "",
+          yosh: "",
+          raqam: "",
+          manzil: "",
+        });
+
+        setShowMsg(false);
+        setTimeout(() => setShowMsg(true), 50);
+
+        // ✅ Navigate to another page
+        navigate("/rating");
+      } else {
+        setRobotMsg("❌ Xatolik yuz berdi!");
+        setShowMsg(false);
+        setTimeout(() => setShowMsg(true), 50);
+      }
     } catch (error) {
-      setRobotMsg("❌ Xatolik yuz berdi!");
+      console.error("Telegramga yuborishda xatolik:", error);
+      setRobotMsg("❌ Ulanishda muammo bor!");
+      setShowMsg(false);
+      setTimeout(() => setShowMsg(true), 50);
     }
-
-    setShowMsg(false);
-    setTimeout(() => setShowMsg(true), 50);
-
-
-    setFormData({
-      ism: "",
-      familiya: "",
-      yosh: "",
-      raqam: "",
-      manzil: "",
-    });
-    
   };
 
   const handleFocus = (field) => {
@@ -114,13 +125,12 @@ export default function RobotForm() {
         </>
       ),
     };
-    
-    
+
     setRobotMsg(messages[field] || "✍️ Ma'lumotni kiriting.");
     setShowMsg(false);
     setTimeout(() => setShowMsg(true), 50);
   };
-  
+
 
   return (
     <div
